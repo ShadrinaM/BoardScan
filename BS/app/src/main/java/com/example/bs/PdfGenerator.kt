@@ -22,8 +22,6 @@ import org.opencv.imgproc.Imgproc
 
 
 class PdfGenerator(private val context: Context){
-
-    /*// Просто ПДФ
     fun generatePdf(images: List<Uri>, context: Context): Uri? {
         if (images.isEmpty()) {
             Log.e("PdfGenerator", "No images to generate PDF")
@@ -42,96 +40,6 @@ class PdfGenerator(private val context: Context){
                 val bitmap = try {
                     context.contentResolver.openInputStream(imageUri)?.use { stream ->
                         BitmapFactory.decodeStream(stream)?.let { originalBitmap ->
-                            // Поворачиваем изображение на 90 градусов вправо
-                            val matrix = Matrix()
-                            matrix.postRotate(90f)
-                            val rotatedBitmap = Bitmap.createBitmap(
-                                originalBitmap,
-                                0, 0,
-                                originalBitmap.width,
-                                originalBitmap.height,
-                                matrix,
-                                true
-                            )
-                            // Масштабируем после поворота
-                            val maxWidth = 1000
-                            val scale = maxWidth.toFloat() / rotatedBitmap.width
-                            val height = (rotatedBitmap.height * scale).toInt()
-                            Bitmap.createScaledBitmap(rotatedBitmap, maxWidth, height, true)
-                        }
-                    }
-                } catch (e: Exception) {
-                    Log.e("PdfGenerator", "Error loading image: $imageUri", e)
-                    continue
-                }
-
-                bitmap?.let {
-                    try {
-                        document.setPageSize(com.itextpdf.text.Rectangle(it.width.toFloat(), it.height.toFloat()))
-                        document.newPage()
-
-                        val stream = ByteArrayOutputStream()
-                        it.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                        val image = Image.getInstance(stream.toByteArray())
-                        image.setAbsolutePosition(0f, 0f)
-                        document.add(image)
-                    } catch (e: Exception) {
-                        Log.e("PdfGenerator", "Error adding image to PDF", e)
-                    }
-                }
-            }
-
-            document.close()
-            writer.close()
-
-            Log.d("PdfGenerator", "PDF successfully generated at: ${pdfFile.absolutePath}")
-            cleanPictures()
-            Uri.fromFile(pdfFile)
-        } catch (e: Exception) {
-            Log.e("PdfGenerator", "Error generating PDF", e)
-            null
-        }
-    }*/
-
-    fun generatePdf(images: List<Uri>, context: Context): Uri? {
-        if (images.isEmpty()) {
-            Log.e("PdfGenerator", "No images to generate PDF")
-            return null
-        }
-
-        val bordScanDir = getOrCreateBordScanDir()
-        val pdfFile = File(bordScanDir, "lecture_${getFormattedDateTime()}.pdf")
-
-        return try {
-            val document = Document()
-            val writer = PdfWriter.getInstance(document, FileOutputStream(pdfFile))
-            document.open()
-
-            for (imageUri in images) {
-                val bitmap = try {
-                    context.contentResolver.openInputStream(imageUri)?.use { stream ->
-                        BitmapFactory.decodeStream(stream)?.let { originalBitmap ->
-
-//                            // Выравнивание доски перед обработкой
-//                            val alignedBitmap = alignBoard(originalBitmap)
-//
-//                            // Поворачиваем изображение на 90 градусов вправо
-//                            val matrix = Matrix()
-//                            matrix.postRotate(90f)
-//                            val rotatedBitmap = Bitmap.createBitmap(
-//                                alignedBitmap,  // Используем выровненное изображение
-//                                0, 0,
-//                                alignedBitmap.width,
-//                                alignedBitmap.height,
-//                                matrix,
-//                                true
-//                            )
-//                            // Масштабируем после поворота
-//                            val maxWidth = 1000
-//                            val scale = maxWidth.toFloat() / rotatedBitmap.width
-//                            val height = (rotatedBitmap.height * scale).toInt()
-//                            Bitmap.createScaledBitmap(rotatedBitmap, maxWidth, height, true)
-
                             val alignedBitmap = alignBoard(originalBitmap)
 
                             val maxWidth = 1000
